@@ -11,31 +11,48 @@ function multiply(number1, number2) {
 }
 
 function divide(number1, number2) {
-    return number2 !== 0 ? number1 / number2 : "Error (division by 0)";
+    if (number2 === 0) {
+        return "Error: Division by zero";
+    }
+    return number1 / number2;
 }
 
+// Get input values and validate them
 function getInputValues() {
-    const number1 = parseFloat(document.getElementById('number1').value) || 0;
-    const number2 = parseFloat(document.getElementById('number2').value) || 0;
-    return [number1, number2];
+    const num1 = document.getElementById('number1').value;
+    const num2 = document.getElementById('number2').value;
+
+    if (num1 === '' || num2 === '') {
+        return { valid: false };
+    }
+
+    return {
+        valid: true,
+        number1: parseFloat(num1),
+        number2: parseFloat(num2)
+    };
 }
 
-document.getElementById('add').addEventListener('click', function() {
-    const [number1, number2] = getInputValues();
-    document.getElementById('calculation-result').textContent = add(number1, number2);
-});
+// Show result or error
+function displayResult(result) {
+    document.getElementById('calculation-result').textContent = result;
+}
 
-document.getElementById('subtract').addEventListener('click', function() {
-    const [number1, number2] = getInputValues();
-    document.getElementById('calculation-result').textContent = subtract(number1, number2);
-});
+// Handle operation with validation
+function handleOperation(operationFunc) {
+    const input = getInputValues();
 
-document.getElementById('multiply').addEventListener('click', function() {
-    const [number1, number2] = getInputValues();
-    document.getElementById('calculation-result').textContent = multiply(number1, number2);
-});
+    if (!input.valid) {
+        displayResult("Please enter both numbers.");
+        return;
+    }
 
-document.getElementById('divide').addEventListener('click', function() {
-    const [number1, number2] = getInputValues();
-    document.getElementById('calculation-result').textContent = divide(number1, number2);
-});
+    const result = operationFunc(input.number1, input.number2);
+    displayResult(result);
+}
+
+// Add event listeners
+document.getElementById('add').addEventListener('click', () => handleOperation(add));
+document.getElementById('subtract').addEventListener('click', () => handleOperation(subtract));
+document.getElementById('multiply').addEventListener('click', () => handleOperation(multiply));
+document.getElementById('divide').addEventListener('click', () => handleOperation(divide));
